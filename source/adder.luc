@@ -1,0 +1,44 @@
+/* Verilog Reduction Operators
+  & : and
+  ~& : nand
+  | : or
+  ~| : nor
+  ^ : xor
+  ^~ / ~^ : xnor
+   
+*/
+module adder (
+// Note: a & b are 8-bit inputs. ALUFN is a 6-bit input
+// z, v, n are all 1-bit outputs.
+    input a[16],  // First binary output A
+    input b[16],  // Second binary output B
+    input alufn_signal[6],  // Selected function
+    output s[16],  // Output s
+    output z[1],
+    output v[1],
+    output n[1]
+  ) {
+  // The signal out is write only and cannot be read.
+  // Hence, a signal s is used as a temp variable for the output.
+  sig signal[16]; 
+  
+  always {
+    signal = 16b0;   // 16-bit 0 binary
+
+    case(alufn_signal[0]){
+      0: signal = a+b;  // Add
+      1: signal = a-b;  // Subtract
+      default: signal = 16b0;  // 16-bit 0 binary
+  }
+    // Z: True when S outputs are all zero
+    // V: True when addition operation overflows
+    // N: True when S is negative
+    
+    z = ~|signal;  // Check if output all zeros
+    v = (a[15] & (b[15] ^ alufn_signal[0]) & !signal[15]) | (!a[15] & !(b[15] ^ alufn_signal[0]) & signal[15]); // Check for overflow
+    n = signal[15];  // Check if negative
+    s = signal; // Set output
+    
+  }
+}
+    

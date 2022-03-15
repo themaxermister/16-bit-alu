@@ -1,0 +1,91 @@
+Starting Vivado...
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source {C:\Users\polar\Downloads\16bitALU\work\project.tcl}
+# set projDir "C:/Users/polar/Downloads/16bitALU/work/vivado"
+# set projName "16bitALU"
+# set topName top
+# set device xc7a35tftg256-1
+# if {[file exists "$projDir/$projName"]} { file delete -force "$projDir/$projName" }
+# create_project $projName "$projDir/$projName" -part $device
+# set_property design_mode RTL [get_filesets sources_1]
+# set verilogSources [list "C:/Users/polar/Downloads/16bitALU/work/verilog/au_top_0.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/value_store_1.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/edge_detector_2.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/button_conditioner_3.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/alu_4.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/auto_tester_5.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/reset_conditioner_6.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/multi_seven_seg_7.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/pipeline_8.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/adder_9.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/boolean_10.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/shifter_11.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/compare_12.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/counter_13.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/seven_seg_14.v" "C:/Users/polar/Downloads/16bitALU/work/verilog/decoder_15.v" ]
+# import_files -fileset [get_filesets sources_1] -force -norecurse $verilogSources
+# set xdcSources [list "C:/Users/polar/Downloads/16bitALU/work/constraint/alchitry.xdc" "C:/Users/polar/Downloads/16bitALU/work/constraint/io.xdc" "D:/Applications/Alchitry/library/components/au.xdc" ]
+# read_xdc $xdcSources
+# set_property STEPS.WRITE_BITSTREAM.ARGS.BIN_FILE true [get_runs impl_1]
+# update_compile_order -fileset sources_1
+# launch_runs -runs synth_1 -jobs 8
+
+[Wed Mar 16 02:29:02 2022] Launched synth_1...
+Run output will be captured here: C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.runs/synth_1/runme.log
+# wait_on_run synth_1
+[Wed Mar 16 02:29:03 2022] Waiting for synth_1 to finish...
+
+*** Running vivado
+    with args -log au_top_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source au_top_0.tcl
+
+
+
+****** Vivado v2020.2 (64-bit)
+  **** SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+  **** IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+    ** Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+
+source au_top_0.tcl -notrace
+Command: synth_design -top au_top_0 -part xc7a35tftg256-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Device 21-403] Loading part xc7a35tftg256-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 17892
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1035.609 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'au_top_0' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/au_top_0.v:7]
+	Parameter CLKSPEED bound to: 5'b11110 
+	Parameter IDLE_state bound to: 3'b000 
+	Parameter ADD_state bound to: 3'b001 
+	Parameter NORMAL_state bound to: 3'b010 
+	Parameter FAIL_state bound to: 3'b011 
+	Parameter AUTO_state bound to: 3'b100 
+INFO: [Synth 8-6157] synthesizing module 'value_store_1' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/value_store_1.v:7]
+INFO: [Synth 8-6157] synthesizing module 'edge_detector_2' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/edge_detector_2.v:12]
+	Parameter RISE bound to: 1'b1 
+	Parameter FALL bound to: 1'b0 
+INFO: [Synth 8-6155] done synthesizing module 'edge_detector_2' (1#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/edge_detector_2.v:12]
+INFO: [Synth 8-6157] synthesizing module 'button_conditioner_3' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/button_conditioner_3.v:13]
+	Parameter CLK_FREQ bound to: 26'b10111110101111000010000000 
+	Parameter MIN_DELAY bound to: 5'b10100 
+	Parameter NUM_SYNC bound to: 2'b10 
+INFO: [Synth 8-6157] synthesizing module 'pipeline_8' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/pipeline_8.v:11]
+	Parameter DEPTH bound to: 2'b10 
+INFO: [Synth 8-6155] done synthesizing module 'pipeline_8' (2#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/pipeline_8.v:11]
+INFO: [Synth 8-6155] done synthesizing module 'button_conditioner_3' (3#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/button_conditioner_3.v:13]
+INFO: [Synth 8-6155] done synthesizing module 'value_store_1' (4#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/value_store_1.v:7]
+INFO: [Synth 8-6157] synthesizing module 'alu_4' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/alu_4.v:7]
+INFO: [Synth 8-6157] synthesizing module 'adder_9' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/adder_9.v:7]
+INFO: [Synth 8-226] default block is never used [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/adder_9.v:24]
+INFO: [Synth 8-6155] done synthesizing module 'adder_9' (5#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/adder_9.v:7]
+INFO: [Synth 8-6157] synthesizing module 'boolean_10' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/boolean_10.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'boolean_10' (6#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/boolean_10.v:7]
+INFO: [Synth 8-6157] synthesizing module 'shifter_11' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/shifter_11.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'shifter_11' (7#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/shifter_11.v:7]
+INFO: [Synth 8-6157] synthesizing module 'compare_12' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/compare_12.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'compare_12' (8#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/compare_12.v:7]
+INFO: [Synth 8-226] default block is never used [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/alu_4.v:96]
+INFO: [Synth 8-6155] done synthesizing module 'alu_4' (9#1) [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/alu_4.v:7]
+INFO: [Synth 8-6157] synthesizing module 'auto_tester_5' [C:/Users/polar/Downloads/16bitALU/work/vivado/16bitALU/16bitALU.srcs/sources_1/imports/verilog/auto_tester_5.v:7]
+	Parameter CLKSPEED bound to: 5'b11010 
+	Parameter START_state bound to: 5'b00000 
+	Parameter ADD_state bound to: 5'b00001 
+	Parameter SUB_state bound to: 5'b00010 
+	Parameter MULTIPLY_state bound to: 5'b00011 
+	Parameter AND_state bound to: 5'b00100 
+	Parameter NAND_state 

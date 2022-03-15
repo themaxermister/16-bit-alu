@@ -1,0 +1,25 @@
+module boolean (
+    input a[16],  // First input binary A
+    input b[16],  // Second input binary B
+    input alufn_signal[6],  // Selected function
+    output s[16]  // Output
+  ) {
+
+  
+  always {
+    //switch cases depending on which operations 
+    case(alufn_signal[3:0]){
+      // bXXXX : Selected function
+      b1000: s = a & b;  // AND
+      b1001: s = ~(a&b);  // NAND
+      b1110: s = a | b;  // OR
+      b1111: s = ~(a | b);  // NOR
+      b0110: s = a ^ b;  // XOR
+      b0111: s = ~(a^b);  // XNOR
+      b1010: s = a;  // "A"
+      default:
+        s = 16b0;  // 16-bit 0 binary
+    }
+   
+  }
+}

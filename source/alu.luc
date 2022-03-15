@@ -1,0 +1,67 @@
+module alu (
+    input a[16],  // First binary input A
+    input b[16],  // Second binary input B
+    input alufn_signal[6],  // Selected function
+    output s[16],  // Result output S
+    output zvn[3]    // ZVN input for equation LSB
+  ) {
+  
+  //initializing the components
+  
+  adder adderUnit;
+  boolean booleanUnit;
+  shifter shifterUnit;
+  compare compareUnit; 
+  
+  sig z;  // Z: True when S outputs are all zero
+  sig v;  // V: True when addition operation overflows
+  sig n;  // N: True when S is negative
+  
+  
+  always {
+    // Input adder
+    adderUnit.alufn_signal = alufn_signal; 
+    adderUnit.a = a;
+    adderUnit.b = b;
+    
+    // Output adder
+    z = adderUnit.z;
+    v = adderUnit.v;
+    n = adderUnit.n; 
+    
+    // Add to ZVN list
+    zvn[0] = z;
+    zvn[1] = v;
+    zvn[2] = n;
+    
+    // Input compare     
+    compareUnit.alufn_signal = alufn_signal;  // Set compare unit signal
+    compareUnit.z = z;
+    compareUnit.v = v;
+    compareUnit.n = n;
+    
+    // Input boolean
+    booleanUnit.alufn_signal = alufn_signal;
+    booleanUnit.a = a;
+    booleanUnit.b = b;
+    
+    // Input shifter
+    shifterUnit.alufn_signal = alufn_signal;
+    shifterUnit.a = a;
+    shifterUnit.b = b[3:0];
+    
+    // Output
+    case(alufn_signal[5:4]){  // (00: Adder/Sub; 01: Boolean; 10: Shiftr; 11: Compare)
+      b00 : s = adderUnit.s;    // Adder output
+      b01 : s = booleanUnit.s;  // Boolean output
+      b10 : s = shifterUnit.s;  // Shifter output
+      b11 : s = compareUnit.s;  // Compare output
+      default: s = 16b0;  // 16-bit 0 output
+    }
+      
+    if (alufn_signal == b000010){  // If shifter signal
+      s = a*b; // Multiply output: First binary output A * Second binary output B
+    }
+    
+  }
+}

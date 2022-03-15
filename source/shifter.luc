@@ -1,0 +1,16 @@
+module shifter (
+    input a[16], // Binary input
+    input b[4],  // Select signal (Shift Y/N)
+    input alufn_signal[6],  // Shift type (b100000: SHL; b100001: SHR; b100011: SRA)
+    output s[16]  // Output
+  ) {
+
+  always {
+  case (alufn_signal){  // Given shift type
+    default: s = a; // No shift
+    b100000: s = a << b;  // SHL
+    b100001: s = a >> b;  // SHR
+    b100011: s = $signed(a) >>> b;  //SRA
+    }
+  }
+}

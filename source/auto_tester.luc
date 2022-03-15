@@ -1,0 +1,302 @@
+module auto_tester (
+    input clk,  // clock
+    input rst,  // reset
+    input restart,
+    output out[4][5]
+  ) {
+  
+  // instantiate the alu to check its output against test case
+  const CLKSPEED = 26; // speed of update for 26 is approx 1.34s
+  dff counter[CLKSPEED](.clk(clk), .rst(rst)); // create counter as clk
+
+
+  alu alu; // instantiate alu for checking logic of program against predefined assertions
+  .clk(counter.q[CLKSPEED-1]){ //set fsm speed to counter
+    fsm state(.rst(rst)) = {START, ADD, SUB, MULTIPLY, AND, NAND, OR, NOR, XOR, XNOR, A, SHL, SHR, SRA, CMPEQ, CMPLT, CMPLE, END,ERROR}; // create states for testing each of the fsm.
+  }
+
+  always {
+    counter.d = counter.q + 1;
+       case(state.q){
+          state.START:
+            alu.alufn_signal=0;
+            out = {5d0,5d0,5d0,5d0};
+            alu.a = 16b0;
+            alu.b = 16b0;
+        
+          if (restart == 1){ 
+              state.d = state.ADD;
+            }
+      
+          // TEST: ADD Func
+          state.ADD: 
+            alu.alufn_signal = 6b0; // Add function signal
+            alu.a = 16d1; // INPUT A
+            alu.b = 16d1; // INPUT B
+            
+            if (alu.s == 16d2) { // Output s
+                out = {5d11,5d14,5d14,5d30}; // ADD
+                state.d = state.SUB;  // NEXT TEST: SUB
+            }
+            else {
+                out = {5d17,5d18,5d18,5d30};  // ERR
+                state.d = state.ERROR; // ERR Test
+            }
+      
+         // TEST: SUB  Func
+         state.SUB:
+           alu.alufn_signal = 6b1; // Subtract function signal
+           alu.a = 16d7; // INPUT A
+           alu.b = 16d5; // INPUT boolean
+        
+           if (alu.s == 16d2) { // Output s
+              out = {5d5, 5d16, 5d20, 5d30}; // SUB
+              state.d = state.MULTIPLY; // NEXT TEST: MUL
+           }
+           else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+           }
+        
+          // TEST: MUL Function
+          state.MULTIPLY: 
+            alu.alufn_signal = 6b000010; // Multiply function signal
+            alu.a = 16b0000000000001111; // INPUT A
+            alu.b = 16b0000000000000011; // INPUT B
+    
+            if (alu.s == 16b0101101){ // Output s
+                out = {5d15,5d15,5d16,5d13}; // MUL
+                state.d = state.AND; // NEXT TEST: AND
+            }
+            else {
+                out = {5d17,5d18,5d18,5d30}; // ERR 
+                state.d = state.ERROR; // ERR State
+            }
+        
+      
+          // TEST: AND Function
+          state.AND: 
+            alu.alufn_signal = 6b011000; // AND function signal
+            alu.a = 16b101101101; // INPUT A
+            alu.b = 16b001101100; // INPUT B
+  
+            if (alu.s == 16b001101100){ // Output s
+                out = {5d11,5d15,5d14,5d30}; // AND
+                state.d = state.NAND; // NEXT TEST: NAND
+            }
+            else {        
+                out = {5d17,5d18,5d18,5d30}; // ERR
+                state.d = state.ERROR; // ERR State
+            }
+          
+          // TEST: NAND Function
+          state.NAND:
+            alu.alufn_signal = 6b011001; // NAND function signal
+            alu.a = 16b1111111100000000; // INPUT A
+            alu.b = 16b1111000011110000; // INPUT B
+        
+            if (alu.s == 16b0000111111111111) { // Output s
+              out = {5d15, 5d11, 5d15, 5d14}; // NAND
+              state.d = state.OR; // NEXT TEST: OR
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR 
+              state.d = state.ERROR; // ERR State
+            }
+      
+         // TEST: OR Function
+         state.OR: 
+           alu.alufn_signal = 6b011110; // OR function signal
+           alu.a = 16b0000000011001100; // INPUT A
+           alu.b = 16b0000001100000011; // INPUT B
+          
+           if (alu.s == 16b0000001111001111){ // Output s
+              out = {5d0,5d18,5d30,5d30}; // OR
+              state.d = state.NOR; // NEXT TEST: NOR
+           }
+           else {
+                out = {5d17,5d18,5d18,5d30}; // ERR
+                state.d = state.ERROR; // ERR State
+              }
+          
+          // TEST: NOR Function
+          state.NOR:
+            alu.alufn_signal = 6b011111; // NOR function signal
+            alu.a = 16b0000000000001111; // INPUT A
+            alu.b = 16b0000000011000011; // INPUT B
+        
+            if (alu.s == 16b1111111100110000) { // Output s
+              out = {5d15, 5d0, 5d18, 5d30}; // NOR
+              state.d = state.XOR; // NEXT TEST: XOR
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; 
+            }
+          
+          // TEST: XOR Function
+          state.XOR:
+            alu.alufn_signal = 6b010110; // XOR function signal
+            alu.a = 16b0000000000111111; // INPUT A
+            alu.b = 16b0000000000111111; // INPUT B
+            
+            if (alu.s == 16b0000000000000000) { 
+              out = {5d19, 5d0, 5d18, 5d30}; // XOR
+              state.d = state.XNOR; // NEXT TEST: XNOR
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }   
+          
+          // TEST: XNOR Function
+          state.XNOR:
+            alu.alufn_signal = 6b010111; // XNOR function signal
+            alu.a = 16b0000000000101010; // INPUT A
+            alu.b = 16b0000000000101100; // INPUT B
+        
+            if (alu.s == 16b1111111111111001) { // Output s
+              out = {5d19, 5d15, 5d0, 5d18}; // XNOR
+              state.d = state.A; // NEXT TEST: A
+            } 
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+         
+          // TEST: A Function
+          state.A:
+            alu.alufn_signal = 6b011010; // A function signal
+            alu.a = 16b0000000000101010;  // INPUT A
+            alu.b = 16b0000000000101100; // INPUT B
+        
+            if (alu.s == 16b0000000000101010) { // Output s
+              out = {5d11, 5d30, 5d30, 5d30}; // A
+              state.d = state.SHL; // NEXT TEST: SHL
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+          
+          // TEST: SHL Function
+          state.SHL: 
+            alu.alufn_signal = 6b100000; // SHL function signal
+            alu.a = 16b0000000000000001; // INPUT A
+            alu.b = 16b0000000000000010; // INPUT B
+            
+            if (alu.s == 16b0000000000000100){ // Output s
+              out = {5d5,5d19,5d13,5d30}; // SHL
+              state.d = state.SHR; // NEXT TEST: SHR
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+    
+          // TEST: SHR Function
+          state.SHR:
+            alu.alufn_signal = 6b100001; // SHR function signal
+            alu.a = 16b1000000000000000; // INPUT A
+            alu.b = 16b0000000000000001; // INPUT B
+            if (alu.s == 16b0100000000000000) { // Output s
+              out = {5d5, 5d19, 5d18, 5d30}; // SHR
+              state.d = state.SRA; 
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+          
+          // TEST: SRA Function
+          state.SRA:
+            alu.alufn_signal = 6b100011; // SRA function signal
+            alu.a = 16b1000000000000000; // INPUT A
+            alu.b = 16b0000000000000001; // INPUT B
+        
+            if (alu.s == 16b1100000000000000) { // Output s
+              out = {5d5, 5d18, 5d11, 5d30}; // SRA
+              state.d = state.CMPEQ; // NEXT TEST: CMPEQ
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+          
+          // TEST: CMPEQ Function
+          state.CMPEQ: 
+            alu.alufn_signal = 6b110011; // CMPEQ function signal
+            alu.a = 16b0001000100010001; // INPUT A
+            alu.b = 16b0001000100010001; // INPUT B
+            
+            if (alu.s == 16b01){ // Output s
+              out = {5d21,5d17,5d9,5d30}; //CMPEQ
+              state.d = state.CMPLT; // NEXT TEST: CMPLT
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+             
+          // TEST: CMPLT Function
+          state.CMPLT:
+            alu.alufn_signal = 6b110101; // CMPLT function signal
+            alu.a = 16b0000000100010001; // INPUT A
+            alu.b = 16b0001000100010001; // INPUT B
+        
+            if (alu.s == 16d1) { // Output s
+              out = {5d21, 5d17, 5d30, 5d30}; // CMPLE
+              state.d = state.CMPLE; // NEXT TEST: CMPLE
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+          
+          // TEST: CMPLE Function
+          state.CMPLE:
+            alu.alufn_signal = 6b110111;
+            alu.a = 16b0000000100010001;
+            alu.b = 16b0001000100010001;
+        
+            if (alu.s == 16d1) { // Output s
+              out = {5d21, 5d13, 5d17, 5d30}; // END
+              state.d = state.END; // NEXT: END STATE
+            }
+            else {
+              out = {5d17,5d18,5d18,5d30}; // ERR
+              state.d = state.ERROR; // ERR State
+            }
+      
+          // END OF TEST CASES
+          state.END:
+            out = {5d17,5d15,5d14,5d30}; // END
+            alu.a = 0; // RESET INPUT A
+            alu.b = 0; // RESET INPUT B
+            alu.alufn_signal = 0; // RESET function signal
+            
+            // Press middle button to restart 
+            if (restart == 1){ 
+              state.d = state.START;
+            }
+        
+          // ERROR STATE
+          state.ERROR:
+            alu.a = 0; // RESET INPUT A
+            alu.b = 0; // RESET INPUT B
+            alu.alufn_signal = 0;
+            out = {5d17,5d18,5d18,5d30}; // ERR
+            if(restart == 1){
+              state.d = state.START; // Set to START state
+            }
+          
+          // DEFAULT STATE
+          default:
+            state.d = state.START; // Set to START state
+            out = {5d30,5d30,5d30,5d30}; // Clear 7-seg display
+            alu.a = 0; // RESET INPUT A
+            alu.b = 0; // RESET INPUT B
+            alu.alufn_signal = 0; // RESET function signal
+        
+    }
+}

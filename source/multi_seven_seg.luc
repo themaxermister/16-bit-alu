@@ -1,0 +1,33 @@
+// A module that will take four values in and 
+// display them on all four digits instead of only using one.
+
+module multi_seven_seg #(
+    DIGITS = 4 : DIGITS > 0,
+    DIV = 16 : DIV >= 0  // Prevent bleeding between digits due to switching too fast; If too high, digits weill flicker.
+  )(
+    input clk,                // clock
+    input rst,                // reset
+    input values [DIGITS][5], // values to show
+    output seg [7],           // LED segments
+    output sel [DIGITS]       // Digit select
+  ) {
+ 
+  // number of bits we need to cover all DIGITS number of digits
+  // $clog2(): Computes the ceiling log base 2 of a constant value
+  const DIGIT_BITS = $clog2(DIGITS);
+ 
+  .clk(clk), .rst(rst) {
+    counter ctr (#DIV(DIV), #SIZE(DIGIT_BITS), #TOP(DIGITS-1)); // Used to select active digit
+  }
+ 
+  seven_seg seg_dec;                      // segment decoder
+  decoder digit_dec (#WIDTH(DIGIT_BITS)); // digit decoder
+ 
+  always {
+    seg_dec.char = values[ctr.value];     // Select the value for the active digit (ctr cycles active digits)
+    seg = seg_dec.segs;                   // output the decoded value
+ 
+    digit_dec.in = ctr.value;             // decode active digit to one-hot
+    sel = digit_dec.out;                  // output the active digit
+  }
+}

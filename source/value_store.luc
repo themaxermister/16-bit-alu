@@ -1,0 +1,39 @@
+module value_store (
+    input btna,  // Button A
+    input btnb,  // Button B
+    input values[16],  // Input binary value
+    input clk,  // clock
+    input rst,  // reset
+    output outA[16],  // Output value A
+    output outB[16]   // Output value B
+  ) {
+  
+  // Detect rising edge in clock cycle
+  // Generate a pulse only on rising edges: Rise = 1; Fall = 0;
+  edge_detector detectorA (#RISE(1), #FALL(0), .clk(clk));  
+  edge_detector detectorB (#RISE(1), #FALL(0), .clk(clk));
+  
+  // Detect button trigger
+  button_conditioner conditionerA (.clk(clk), .in(btna));
+  button_conditioner conditionerB (.clk(clk), .in(btnb));
+    
+  // Register to remember input of values and storing to A and B 
+  dff flipA[16](#INIT(0) , .clk(clk), .rst(rst));  // Store binary value A
+  dff flipB[16](#INIT(0) , .clk(clk), .rst(rst));  // Store binary value B
+
+  always {
+        detectorA.in = conditionerA.out;  // If button A was pressed
+        detectorB.in = conditionerB.out;  // If button B was pressed
+    
+        if (detectorA.out) {  // If button A was pressed
+          flipA.d = values;   // Get binary value A
+        }
+        
+        if (detectorB.out) {  // If button B was pressed
+          flipB.d = values;   // Get binary value B
+        }
+ 
+        outA = flipA.q;  // Final output for binary value A
+        outB = flipB.q;  // Final output for binary value B
+  }
+}
